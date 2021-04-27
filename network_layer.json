@@ -1,0 +1,140 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Parameters" : {
+    "VPCSize" : {
+      "Type" : "String",
+      "Default" : "10.1.0.0/16",
+      "Description" : "Enter the VPC CIDR size"
+    }
+  },
+  "Resources":  {
+    "prodVPC" : {
+      "Type" : "AWS::EC2::VPC",
+        "Properties" : {
+          "CidrBlock" : { "Ref" : "VPCSize" },
+          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+       }
+    },
+    "PublicSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+          "VpcId" : { "Ref" : "myVPC" },
+          "CidrBlock" : "10.1.0.0/24",
+          "AvailabilityZone" : "us-east-1a",
+          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
+          "VpcId" : {
+            "Fn::GetAtt": [
+              "prodVPC",
+              "VpcId"
+            ]
+          },
+          "MapPublicIpOnLaunch" : "true"
+      }
+    },
+    "PublicSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+          "VpcId" : { "Ref" : "myVPC" },
+          "CidrBlock" : "10.1.1.0/24",
+          "AvailabilityZone" : "us-east-1b",
+          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
+          "VpcId" : {
+            "Fn::GetAtt": [
+              "prodVPC",
+              "VpcId"
+            ]
+          },
+          "MapPublicIpOnLaunch" : "true"
+      }
+    },
+    "PrivateSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+          "VpcId" : { "Ref" : "myVPC" },
+          "CidrBlock" : "10.1.10.0/24",
+          "AvailabilityZone" : "us-east-1a",
+          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
+          "VpcId" : {
+            "Fn::GetAtt": [
+              "prodVPC",
+              "VpcId"
+            ]
+          }
+      }
+    },
+    "PrivateSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+          "VpcId" : { "Ref" : "myVPC" },
+          "CidrBlock" : "10.1.11.0/24",
+          "AvailabilityZone" : "us-east-1b",
+          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
+          "VpcId" : {
+            "Fn::GetAtt": [
+              "prodVPC",
+              "VpcId"
+            ]
+          }
+      }
+    },
+    "PublicRouteTable1": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "prodVPC" },
+        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "PublicRouteTable2": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "prodVPC" },
+        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "PrivateRouteTable1": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "prodVPC" },
+        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "PrivateRouteTable1": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "prodVPC" },
+        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "PublicSubnetRouteTableAssociation1" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable1" },
+        "SubnetId" : { "Ref" : "PublicSubnet1" }
+      }
+    },
+    "PublicSubnetRouteTableAssociation2" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable2" },
+        "SubnetId" : { "Ref" : "PublicSubnet2" }
+      }
+    },
+    "PrivateSubnetRouteTableAssociation1" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PrivateRouteTable1" },
+        "SubnetId" : { "Ref" : "PrivateSubnet1" }
+      }
+    },
+    "PrivateSubnetRouteTableAssociation2" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PrivateRouteTable2" },
+        "SubnetId" : { "Ref" : "PrivateSubnet2" }
+      }
+    }
+  }
+}
+
+
