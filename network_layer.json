@@ -13,97 +13,73 @@
       "Type" : "AWS::EC2::VPC",
         "Properties" : {
           "CidrBlock" : { "Ref" : "VPCSize" },
-          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+          "Tags" : [ { "Key" : "Name", "Value" : "Prod VPC" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
        }
     },
     "PublicSubnet1" : {
       "Type" : "AWS::EC2::Subnet",
       "Properties" : {
-          "VpcId" : { "Ref" : "myVPC" },
+          "VpcId" : { "Ref" : "prodVPC" },
           "CidrBlock" : "10.1.0.0/24",
           "AvailabilityZone" : "us-east-1a",
-          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
-          "VpcId" : {
-            "Fn::GetAtt": [
-              "prodVPC",
-              "VpcId"
-            ]
-          },
+          "Tags" : [ { "Key" : "Name", "Value" : "Prod Public Subnet 1" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
           "MapPublicIpOnLaunch" : "true"
       }
     },
     "PublicSubnet2" : {
       "Type" : "AWS::EC2::Subnet",
       "Properties" : {
-          "VpcId" : { "Ref" : "myVPC" },
+          "VpcId" : { "Ref" : "prodVPC" },
           "CidrBlock" : "10.1.1.0/24",
           "AvailabilityZone" : "us-east-1b",
-          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
-          "VpcId" : {
-            "Fn::GetAtt": [
-              "prodVPC",
-              "VpcId"
-            ]
-          },
+          "Tags" : [ { "Key" : "Name", "Value" : "Prod Public Subnet 2" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
           "MapPublicIpOnLaunch" : "true"
       }
     },
     "PrivateSubnet1" : {
       "Type" : "AWS::EC2::Subnet",
       "Properties" : {
-          "VpcId" : { "Ref" : "myVPC" },
+          "VpcId" : { "Ref" : "prodVPC" },
           "CidrBlock" : "10.1.10.0/24",
           "AvailabilityZone" : "us-east-1a",
-          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
-          "VpcId" : {
-            "Fn::GetAtt": [
-              "prodVPC",
-              "VpcId"
-            ]
-          }
+          "Tags" : [ { "Key" : "Name", "Value" : "Prod Private Subnet 1" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
       }
     },
     "PrivateSubnet2" : {
       "Type" : "AWS::EC2::Subnet",
       "Properties" : {
-          "VpcId" : { "Ref" : "myVPC" },
+          "VpcId" : { "Ref" : "prodVPC" },
           "CidrBlock" : "10.1.11.0/24",
           "AvailabilityZone" : "us-east-1b",
-          "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
-          "VpcId" : {
-            "Fn::GetAtt": [
-              "prodVPC",
-              "VpcId"
-            ]
-          }
+          "Tags" : [ { "Key" : "Name", "Value" : "Prod Private Subnet 2" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ],
       }
     },
     "PublicRouteTable1": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Ref" : "prodVPC" },
-        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod Public Route Table 1" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     },
     "PublicRouteTable2": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Ref" : "prodVPC" },
-        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod Public Route Table 2" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     },
     "PrivateRouteTable1": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Ref" : "prodVPC" },
-        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod Private Route Table 1" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     },
-    "PrivateRouteTable1": {
+    "PrivateRouteTable2": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Ref" : "prodVPC" },
-        "Tags" : [ { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod Private Route Table 2" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     },
     "PublicSubnetRouteTableAssociation1" : {
@@ -132,6 +108,56 @@
       "Properties" : {
         "RouteTableId" : { "Ref" : "PrivateRouteTable2" },
         "SubnetId" : { "Ref" : "PrivateSubnet2" }
+      }
+    },
+    "NAT1" : {
+      "Type" : "AWS::EC2::NatGateway",
+      "DependsOn" : "NATEIP1",
+      "Properties" : {
+        "AllocationId" : { "Fn::GetAtt" : ["NATEIP1", "AllocationId"]},
+        "SubnetId" : { "Ref" : "PublicSubnet1"},
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod NAT 1" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+       }
+    },
+    "NATEIP1" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "Domain" : "vpc",
+        "Tags" : [ { "Key" : "Name", "Value" : "NAT EIP 1" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ] 
+      }
+    },
+    "NAT1Route" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "NAT1",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PrivateRouteTable1" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "NatGatewayId" : { "Ref" : "NAT1" }
+      }
+    },
+    "NAT2" : {
+      "Type" : "AWS::EC2::NatGateway",
+      "DependsOn" : "NATEIP2",
+      "Properties" : {
+        "AllocationId" : { "Fn::GetAtt" : ["NATEIP2", "AllocationId"]},
+        "SubnetId" : { "Ref" : "PublicSubnet2"},
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod NAT 2" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+       }
+    },
+    "NATEIP2" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "Domain" : "vpc",
+        "Tags" : [ { "Key" : "Name", "Value" : "NAT EIP 2" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ] 
+      }
+    },
+    "NAT2Route" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "NAT2",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PrivateRouteTable2" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "NatGatewayId" : { "Ref" : "NAT2" }
       }
     }
   }
