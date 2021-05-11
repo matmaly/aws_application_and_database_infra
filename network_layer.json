@@ -184,7 +184,8 @@
           "FromPort" : 22,
           "ToPort" : 22,
           "CidrIp" : "0.0.0.0/0"
-        }]
+        }],
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod Bastion SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     },
     "ProdALBSecurityGroup" : {
@@ -205,8 +206,46 @@
           "ToPort" : 443,
           "CidrIp" : "0.0.0.0/0"
         }],
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod ALB SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "ProdAppSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "Prod App SG",
+        "GroupDescription" : "Allow HTTP access to the App from ALB SG",
+        "VpcId" : {"Ref" : "prodVPC"},
+        "SecurityGroupIngress" : [{
+          "IpProtocol" : "tcp",
+          "FromPort" : 80,
+          "ToPort" : 80,
+          "SourceSecurityGroupId" : { "!Ref" : "ProdALBSecurityGroup" } 
+        },
+        {
+          "IpProtocol" : "tcp",
+          "FromPort" : 443,
+          "ToPort" : 443,
+          "SourceSecurityGroupId" : { "!Ref" : "ProdALBSecurityGroup" }
+        }],
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod App SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "ProdDBSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "Prod DB SG",
+        "GroupDescription" : "Allow DB access to the App from App SG",
+        "VpcId" : {"Ref" : "prodVPC"},
+        "SecurityGroupIngress" : [{
+          "IpProtocol" : "tcp",
+          "FromPort" : 3306,
+          "ToPort" : 3306,
+          "SourceSecurityGroupId" : { "!Ref" : "ProdAppSecurityGroup" } 
+        }],
+        "Tags" : [ { "Key" : "Name", "Value" : "Prod DB SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     }
+  }
 }
 
 
