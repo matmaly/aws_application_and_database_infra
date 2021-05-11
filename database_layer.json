@@ -3,6 +3,10 @@
     "Description": "AWS CloudFormation RDS multi AZ instance",
 
     "Parameters": {
+        "DBSGID" : {
+            "Type" : "String",
+            "Description": "Database security group ID from the Network layer"
+        },
         "DBInstanceID": {
             "Default": "prodDbInstance",
             "Description": "My database instance",
@@ -69,7 +73,8 @@
                 "EngineVersion": "8.0.16",
                 "MasterUsername": { "Ref": "DBUsername" },
                 "MasterUserPassword": { "Ref": "DBPassword" },
-                "MultiAZ": "True"
+                "MultiAZ": "True",
+                "VPCSecurityGroups" : 
             }
         },
         "endpointParameter": {

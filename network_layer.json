@@ -289,6 +289,12 @@
          }
       }
     }
+  },
+  "Outputs": {
+    "ProdDBSecurityGroupID": {
+        "Value": { "!Ref" : "ProdDBSecurityGroup" },
+        "Description": "ID of the DB SG"
+    }
   }
 }
 

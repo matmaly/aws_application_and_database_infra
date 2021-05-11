@@ -1,0 +1,33 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "AWS CloudFormation Root stack",
+
+  "Resources" : {
+    "NetworkStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "network_layer.json"
+      }
+    },
+    "IAMStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "iam_layer.json"
+      }
+    },
+    "DBStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "database_layer.json",
+        "Parameters": {
+          "SharedValueParameter": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.ProdDBSecurityGroupID"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
