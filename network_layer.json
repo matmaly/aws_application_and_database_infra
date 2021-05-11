@@ -211,38 +211,82 @@
     },
     "ProdAppSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
+      "DependsOn" : "ProdALBSecurityGroup",
       "Properties" : {
         "GroupName" : "Prod App SG",
         "GroupDescription" : "Allow HTTP access to the App from ALB SG",
         "VpcId" : {"Ref" : "prodVPC"},
-        "SecurityGroupIngress" : [{
-          "IpProtocol" : "tcp",
-          "FromPort" : 80,
-          "ToPort" : 80,
-          "SourceSecurityGroupId" : { "!Ref" : "ProdALBSecurityGroup" } 
-        },
-        {
-          "IpProtocol" : "tcp",
-          "FromPort" : 443,
-          "ToPort" : 443,
-          "SourceSecurityGroupId" : { "!Ref" : "ProdALBSecurityGroup" }
-        }],
         "Tags" : [ { "Key" : "Name", "Value" : "Prod App SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "ProdAppSecurityGroupInboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties":{
+         "IpProtocol": "tcp",
+         "FromPort": 80,
+         "ToPort": 80,
+         "SourceSecurityGroupId": {
+           "Fn::GetAtt": [
+             "ProdALBSecurityGroup",
+             "GroupId"
+            ]
+         },
+         "GroupId": {
+            "Fn::GetAtt": [
+              "ProdAppSecurityGroup",
+              "GroupId"
+            ]
+         }
+      }
+    },
+    "ProdAppSecurityGroupInboundRule2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties":{
+         "IpProtocol": "tcp",
+         "FromPort": 443,
+         "ToPort": 443,
+         "SourceSecurityGroupId": {
+           "Fn::GetAtt": [
+             "ProdALBSecurityGroup",
+             "GroupId"
+            ]
+         },
+         "GroupId": {
+            "Fn::GetAtt": [
+              "ProdAppSecurityGroup",
+              "GroupId"
+            ]
+         }
       }
     },
     "ProdDBSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
+      "DependsOn" : "ProdAppSecurityGroup",
       "Properties" : {
         "GroupName" : "Prod DB SG",
         "GroupDescription" : "Allow DB access to the App from App SG",
         "VpcId" : {"Ref" : "prodVPC"},
-        "SecurityGroupIngress" : [{
-          "IpProtocol" : "tcp",
-          "FromPort" : 3306,
-          "ToPort" : 3306,
-          "SourceSecurityGroupId" : { "!Ref" : "ProdAppSecurityGroup" } 
-        }],
         "Tags" : [ { "Key" : "Name", "Value" : "Prod DB SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
+      }
+    },
+    "ProdDBSecurityGroupInboundRule": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties":{
+         "IpProtocol": "tcp",
+         "FromPort": 3306,
+         "ToPort": 3306,
+         "SourceSecurityGroupId": {
+           "Fn::GetAtt": [
+             "ProdAppSecurityGroup",
+             "GroupId"
+            ]
+         },
+         "GroupId": {
+            "Fn::GetAtt": [
+              "ProdDBSecurityGroup",
+              "GroupId"
+            ]
+         }
       }
     }
   }
