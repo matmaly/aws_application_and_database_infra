@@ -4,7 +4,7 @@
 
     "Parameters": {
         "DBInstanceID": {
-            "Default": "mydbinstance",
+            "Default": "prodDbInstance",
             "Description": "My database instance",
             "Type": "String",
             "MinLength": "1",
@@ -14,7 +14,7 @@
             "ConstraintDescription": "Must begin with a letter and must not end with a hyphen or contain two consecutive hyphens."
         },
         "DBName": {
-            "Default": "mydb",
+            "Default": "prodDB",
             "Description": "My database",
             "Type": "String",
             "MinLength": "1",
@@ -24,7 +24,6 @@
         },
         "DBInstanceClass": {
             "Default": "db.t3.micro",
-
             "Description": "DB instance class",
             "Type": "String",
             "ConstraintDescription": "Must select a valid DB instance type."
@@ -62,29 +61,14 @@
         "myDB": {
             "Type": "AWS::RDS::DBInstance",
             "Properties": {
-                "DBInstanceIdentifier": {
-                    "Ref": "DBInstanceID"
-                },
-
-                "DBName": {
-                    "Ref": "DBName"
-                },
-                "DBInstanceClass": {
-                    "Ref": "DBInstanceClass"
-                },
-                "AllocatedStorage": {
-                    "Ref": "DBAllocatedStorage"
-                },
+                "DBInstanceIdentifier": { "Ref": "DBInstanceID" },
+                "DBName": { "Ref": "DBName" },
+                "DBInstanceClass": { "Ref": "DBInstanceClass" },
+                "AllocatedStorage": { "Ref": "DBAllocatedStorage" },
                 "Engine": "MySQL",
                 "EngineVersion": "8.0.16",
-                "MasterUsername": {
-
-                    "Ref": "DBUsername"
-                },
-                "MasterUserPassword": {
-                    "Ref": "DBPassword"
-
-                },
+                "MasterUsername": { "Ref": "DBUsername" },
+                "MasterUserPassword": { "Ref": "DBPassword" },
                 "MultiAZ": "True"
             }
         },
@@ -99,6 +83,32 @@
                     "Endpoint.Address"
                     ]
                 }
+            }
+        },
+        "DBUsernameParameter": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": "/example/username",
+                "Type": "String",
+                "Value":  { "!Ref" : "DBUsername" }
+                
+            }
+        },
+        "DBPasswordParameter": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": "/example/password",
+                "Type": "String",
+                "Value":  { "!Ref" : "DBPassword" }
+                
+            }
+        },
+        "DBNameParameter": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": "/example/database",
+                "Type": "String",
+                "Value":  { "!Ref" : "DBName" }
                 
             }
         }
