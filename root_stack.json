@@ -51,9 +51,22 @@
               "NetworkStack",
               "Outputs.ALBSecurityGroupID"
             ]
+          },
+          "PublicSubnet1ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PublicSubnet1ID"
+            ]
+          },
+          "PublicSubnet2ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PublicSubnet2ID"
+            ]
           }
         }
       }
     }
   }
 }
+

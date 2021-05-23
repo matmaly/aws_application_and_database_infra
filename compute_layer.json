@@ -6,21 +6,72 @@
         "ALBSecurityGroupID" : {
             "Type" : "String",
             "Description": "ALB group ID from the Network layer"
+        },
+        "PublicSubnet1ID" : {
+            "Type" : "String",
+            "Description": "Public Subnet 1 ID"
+        },
+        "PublicSubnet2ID" : {
+            "Type" : "String",
+            "Description": "Public Subnet 2 ID"
         }
     }
        
     },
     "Resources": {
+        "ProdApplicationServersLaunchTemplate": {
+            "Type" : "AWS::EC2::LaunchTemplate",
+            "Properties" : {
+                "LaunchTemplateData" : {
+                    "BlockDeviceMapping" : {
+                        "Ebs" : {
+                          "VolumeType" : "gp2",
+                          "DeleteOnTermination" : "true",
+                          "VolumeSize" : "20",
+                          "Encrypted" : "true"
+                        }
+                    },
+                    "ImageId" : "ami-0d5eff06f840b45e9",
+                    "InstanceType" : "t2.small"
+                    
+                },
+                "LaunchTemplateName" : String,
+                "TagSpecifications" : [ LaunchTemplateTagSpecification, ... ]
+            }
+        },
+        "ProdApplicationInstance" : {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : "ami-0d5eff06f840b45e9",
+                "KeyName" : "vockey",
+                "InstanceType" : "t2.small",
+                
+                "BlockDeviceMappings" : [
+                    {
+                        "DeviceName" : "/dev/sdm",
+                        "Ebs" : {
+                        "VolumeType" : "io1",
+                        "Iops" : "200",
+                        "DeleteOnTermination" : "false",
+                        "VolumeSize" : "20"
+                        }
+                    }, 
+                    {
+                        "DeviceName" : "/dev/sdk",
+                        "NoDevice" : {}
+                    }
+                ]
+            }
+        }
         "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
         "Properties" : {
             "IpAddressType" : "ipv4",
             "Name" : "ProdApplicationLoadBalancer",
             "Scheme" : "internet-facing",
             "SecurityGroups" : [{ "!Ref" : "ALBSecurityGroupID" }],
-            "SubnetMappings" : [ SubnetMapping, ... ],
-            "Subnets" : [ String, ... ],
-            "Tags" : [ Tag, ... ],
-            "Type" : String
+            "Subnets" : [{ "!Ref" : "PublicSubnet1ID" }, { "!Ref" : "PublicSubnet2ID" }],
+            "Tags" : [ { "Key" : "Name", "Value" : "Prod DB SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "compute" } ],
+            "Type" : "application"
         }
     }
 }
