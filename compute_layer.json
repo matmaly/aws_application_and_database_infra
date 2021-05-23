@@ -5,7 +5,11 @@
     "Parameters": {
         "ALBSecurityGroupID" : {
             "Type" : "String",
-            "Description": "ALB group ID from the Network layer"
+            "Description": "ALB SG group ID from the Network layer"
+        },
+        "AppSecurityGroupID" : {
+            "Type" : "String",
+            "Description": "App SG group ID from the Network layer"
         },
         "PublicSubnet1ID" : {
             "Type" : "String",
@@ -32,8 +36,9 @@
                         }
                     },
                     "ImageId" : "ami-0d5eff06f840b45e9",
-                    "InstanceType" : "t2.small"
-                    
+                    "InstanceType" : "t2.small",
+                    "KeyName" : "vockey",
+                    "SecurityGroupIds" : [ "!Ref" : "AppSecurityGroupID" ]
                 },
                 "LaunchTemplateName" : String,
                 "TagSpecifications" : [ LaunchTemplateTagSpecification, ... ]

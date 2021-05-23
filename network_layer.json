@@ -291,6 +291,10 @@
     }
   },
   "Outputs": {
+    "ProdAppSecurityGroupID": {
+        "Value": { "!Ref" : "ProdAppSecurityGroup" },
+        "Description": "ID of the App SG"
+    },
     "ProdDBSecurityGroupID": {
         "Value": { "!Ref" : "ProdDBSecurityGroup" },
         "Description": "ID of the DB SG"
