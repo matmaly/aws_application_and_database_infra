@@ -7,7 +7,7 @@
             "Type" : "String",
             "Description": "ALB SG group ID from the Network layer"
         },
-        "AppSecurityGroupID" : {
+        "ProdAppSecurityGroupID" : {
             "Type" : "String",
             "Description": "App SG group ID from the Network layer"
         },
@@ -18,6 +18,14 @@
         "PublicSubnet2ID" : {
             "Type" : "String",
             "Description": "Public Subnet 2 ID"
+        },
+        "PrivateSubnet1ID" : {
+            "Type" : "String",
+            "Description": "Private Subnet 1 ID"
+        },
+        "PrivateSubnet2ID" : {
+            "Type" : "String",
+            "Description": "Private Subnet 2 ID"
         }
     }
        
@@ -26,6 +34,7 @@
         "ProdApplicationServersLaunchTemplate": {
             "Type" : "AWS::EC2::LaunchTemplate",
             "Properties" : {
+                "LaunchTemplateName" : "ProdApplicationServersLaunchTemplate",
                 "LaunchTemplateData" : {
                     "BlockDeviceMapping" : {
                         "Ebs" : {
@@ -38,10 +47,52 @@
                     "ImageId" : "ami-0d5eff06f840b45e9",
                     "InstanceType" : "t2.small",
                     "KeyName" : "vockey",
-                    "SecurityGroupIds" : [ "!Ref" : "AppSecurityGroupID" ]
-                },
-                "LaunchTemplateName" : String,
-                "TagSpecifications" : [ LaunchTemplateTagSpecification, ... ]
+                    "SecurityGroupIds" : [ "!Ref" : "AppSecurityGroupID" ],
+                    "UserData" : {
+                        "Fn::Base64" : { "Fn::Join" : ["",[
+        			        "#!/bin/bash -ex","\n",
+        			        "yum -y update","\n",
+                            "amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2","\n",
+                            "yum install -y httpd mariadb-server","\n",
+                            "chkconfig httpd on","\n",
+                            "service httpd start","\n",
+                            "cd /home/ec2-user","\n",
+                            "wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-200-ACACAD-20-EN/capstone-project/Countrydatadump.sql","\n",
+                            "chown ec2-user:ec2-user Countrydatadump.sql","\n",
+                            "cd /var/www/html","\n",
+                            "wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-200-ACACAD-20-EN/capstone-project/Example.zip","\n",
+                            "unzip Example.zip -d /var/www/html/","\n",]]}
+                    }
+                }
+            }
+        },
+        "ProdAppASG" : {
+            "Type" : "AWS::AutoScaling::AutoScalingGroup",
+            "Properties" : {
+                "AutoScalingGroupName" : "ProductionServersAutoScalingGroup",
+                "CapacityRebalance" : Boolean,
+                "Cooldown" : String,
+                "DesiredCapacity" : String,
+                "HealthCheckGracePeriod" : Integer,
+                "HealthCheckType" : String,
+                "InstanceId" : String,
+                "LaunchConfigurationName" : String,
+                "LaunchTemplate" : LaunchTemplateSpecification,
+                "LifecycleHookSpecificationList" : [ LifecycleHookSpecification, ... ],
+                "LoadBalancerNames" : [ String, ... ],
+                "MaxInstanceLifetime" : Integer,
+                "MaxSize" : String,
+                "MetricsCollection" : [ MetricsCollection, ... ],
+                "MinSize" : String,
+                "MixedInstancesPolicy" : MixedInstancesPolicy,
+                "NewInstancesProtectedFromScaleIn" : Boolean,
+                "NotificationConfigurations" : [ NotificationConfiguration, ... ],
+                "PlacementGroup" : String,
+                "ServiceLinkedRoleARN" : String,
+                "Tags" : [ TagProperty, ... ],
+                "TargetGroupARNs" : [ String, ... ],
+                "TerminationPolicies" : [ String, ... ],
+                "VPCZoneIdentifier" : [ String, ... ]
             }
         },
         "ProdApplicationInstance" : {

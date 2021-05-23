@@ -52,7 +52,7 @@
               "Outputs.ALBSecurityGroupID"
             ]
           },
-          "AppSecurityGroupID": {
+          "ProdAppSecurityGroupID": {
             "Fn::GetAtt": [
               "NetworkStack",
               "Outputs.ProdAppSecurityGroup"
@@ -68,6 +68,18 @@
             "Fn::GetAtt": [
               "NetworkStack",
               "Outputs.PublicSubnet2ID"
+            ]
+          },
+          "PrivateSubnet1ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PrivateSubnet1ID"
+            ]
+          },
+          "PrivateSubnet2ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PrivateSubnet2ID"
             ]
           }
         }
