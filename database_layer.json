@@ -7,6 +7,14 @@
             "Type" : "String",
             "Description": "Database security group ID from the Network layer"
         },
+        "PrivateSubnet1ID" : {
+            "Type" : "String",
+            "Description": "ID of the private subnet 1"
+        },
+        "PrivateSubnet2ID" : {
+            "Type" : "String",
+            "Description": "ID of the private subnet 2"
+        }
         "DBInstanceID": {
             "Default": "prodDbInstance",
             "Description": "My database instance",
@@ -62,19 +70,29 @@
         }
     },
     "Resources": {
+        "DBSubnetGroup" : {
+            "Type" : "AWS::RDS::DBSubnetGroup",
+            "Properties" : {
+                "DBSubnetGroupDescription" : "Database Subnet Group",
+                "DBSubnetGroupName" : "DB Subnet Group",
+                "SubnetIds" : [{ "!Ref": "PrivateSubnet1ID" }, { "!Ref" : "PrivateSubnet2ID" }],
+                "Tags" : [ { "Key" : "Name", "Value" : "Prod DB SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "database" } ]
+            }
+        },
         "myDB": {
             "Type": "AWS::RDS::DBInstance",
             "Properties": {
-                "DBInstanceIdentifier": { "Ref": "DBInstanceID" },
-                "DBName": { "Ref": "DBName" },
-                "DBInstanceClass": { "Ref": "DBInstanceClass" },
-                "AllocatedStorage": { "Ref": "DBAllocatedStorage" },
+                "DBInstanceIdentifier": { "!Ref": "DBInstanceID" },
+                "DBName": { "!Ref": "DBName" },
+                "DBInstanceClass": { "!Ref": "DBInstanceClass" },
+                "AllocatedStorage": { "!Ref": "DBAllocatedStorage" },
                 "Engine": "MySQL",
                 "EngineVersion": "8.0.16",
-                "MasterUsername": { "Ref": "DBUsername" },
-                "MasterUserPassword": { "Ref": "DBPassword" },
-                "MultiAZ": "True",
-                "VPCSecurityGroups" : 
+                "MasterUsername": { "!Ref": "DBUsername" },
+                "MasterUserPassword": { "!Ref": "DBPassword" },
+                "MultiAZ" : "True",
+                "DBSubnetGroupName": { "!Ref": "DBSubnetGroup" }
+                "VPCSecurityGroups": [{ "!Ref!" : "DBSGID" }]
             }
         },
         "endpointParameter": {

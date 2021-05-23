@@ -294,7 +294,19 @@
     "ProdDBSecurityGroupID": {
         "Value": { "!Ref" : "ProdDBSecurityGroup" },
         "Description": "ID of the DB SG"
-    }
+    },
+    "ALBSecurityGroupID": {
+        "Value": { "!Ref" : "ProdALBSecurityGroup" },
+        "Description": "ID of the ALB SG"
+    },
+    "PrivateSubnet1ID": {
+        "Value": { "!Ref" : "PrivateSubnet1" },
+        "Description": "ID of the Private Subnet1"
+    },
+    "PrivateSubnet2ID": {
+        "Value": { "!Ref" : "PrivateSubnet2" },
+        "Description": "ID of the Private Subnet2"
+    },
   }
 }
 

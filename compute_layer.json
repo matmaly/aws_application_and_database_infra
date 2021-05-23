@@ -1,0 +1,26 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "AWS CloudFormation RDS multi AZ instance",
+
+    "Parameters": {
+        "ALBSecurityGroupID" : {
+            "Type" : "String",
+            "Description": "ALB group ID from the Network layer"
+        }
+    }
+       
+    },
+    "Resources": {
+        "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
+        "Properties" : {
+            "IpAddressType" : "ipv4",
+            "Name" : "ProdApplicationLoadBalancer",
+            "Scheme" : "internet-facing",
+            "SecurityGroups" : [{ "!Ref" : "ALBSecurityGroupID" }],
+            "SubnetMappings" : [ SubnetMapping, ... ],
+            "Subnets" : [ String, ... ],
+            "Tags" : [ Tag, ... ],
+            "Type" : String
+        }
+    }
+}

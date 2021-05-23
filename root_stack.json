@@ -20,10 +20,36 @@
       "Properties": {
         "TemplateURL": "database_layer.json",
         "Parameters": {
-          "SharedValueParameter": {
+          "DBSGID": {
             "Fn::GetAtt": [
               "NetworkStack",
               "Outputs.ProdDBSecurityGroupID"
+            ]
+          },
+          "PrivateSubnet1ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PrivateSubnet1ID"
+            ]
+          },
+          "PrivateSubnet2ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PrivateSubnet2ID"
+            ]
+          }
+        }
+      }
+    },
+    "ComputeStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "compute_layer.json",
+        "Parameters": {
+          "ALBSecurityGroupID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.ALBSecurityGroupID"
             ]
           }
         }
