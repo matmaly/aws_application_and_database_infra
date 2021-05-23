@@ -70,29 +70,23 @@
             "Type" : "AWS::AutoScaling::AutoScalingGroup",
             "Properties" : {
                 "AutoScalingGroupName" : "ProductionServersAutoScalingGroup",
-                "CapacityRebalance" : Boolean,
-                "Cooldown" : String,
-                "DesiredCapacity" : String,
-                "HealthCheckGracePeriod" : Integer,
-                "HealthCheckType" : String,
-                "InstanceId" : String,
-                "LaunchConfigurationName" : String,
-                "LaunchTemplate" : LaunchTemplateSpecification,
-                "LifecycleHookSpecificationList" : [ LifecycleHookSpecification, ... ],
-                "LoadBalancerNames" : [ String, ... ],
-                "MaxInstanceLifetime" : Integer,
-                "MaxSize" : String,
-                "MetricsCollection" : [ MetricsCollection, ... ],
-                "MinSize" : String,
-                "MixedInstancesPolicy" : MixedInstancesPolicy,
-                "NewInstancesProtectedFromScaleIn" : Boolean,
-                "NotificationConfigurations" : [ NotificationConfiguration, ... ],
-                "PlacementGroup" : String,
+                "CapacityRebalance" : "true",
+                "DesiredCapacity" : "2",
+                "HealthCheckGracePeriod" : 300,
+                "HealthCheckType" : "ELB",
+                "LaunchTemplate" : {
+                    "LaunchTemplateId" : { "!Ref" : "ProdApplicationServersLaunchTemplate" },
+                    "Version" : {
+                        "Fn::GetAtt" : ["ProdApplicationServersLaunchTemplate", "LatestVersionNumber"]
+                    }
+                },
+                "MaxSize" : "4",
+                "MinSize" : "2",
                 "ServiceLinkedRoleARN" : String,
                 "Tags" : [ TagProperty, ... ],
                 "TargetGroupARNs" : [ String, ... ],
                 "TerminationPolicies" : [ String, ... ],
-                "VPCZoneIdentifier" : [ String, ... ]
+                "VPCZoneIdentifier" : [{ "!Ref" : "PrivateSubnet1ID" }, { "!Ref" : "PrivateSubnet2ID" }]
             }
         },
         "ProdApplicationInstance" : {
