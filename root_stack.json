@@ -1,18 +1,32 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
   "Description" : "AWS CloudFormation Root stack",
-
+  
+  "Parameters" : {
+    "DBUsername": {
+      "NoEcho": "true",
+      "Description": "Username for MySQL database access",
+      "Type": "String",
+      "MinLength": "1",
+      "MaxLength": "16",
+      "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
+      "ConstraintDescription": "must begin with a letter and contain only alphanumeric characters."
+    },
+    "DBPassword": {
+        "NoEcho": "true",
+        "Description": "Password MySQL database access",
+        "Type": "String",
+        "MinLength": "8",
+        "MaxLength": "41",
+        "AllowedPattern": "[a-zA-Z0-9]*",
+        "ConstraintDescription": "must contain only alphanumeric characters."
+    }
+  },
   "Resources" : {
     "NetworkStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
         "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/network_layer.json"
-      }
-    },
-    "IAMStack": {
-      "Type": "AWS::CloudFormation::Stack",
-      "Properties": {
-        "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/iam_layer.json"
       }
     },
     "DBStack": {
@@ -37,7 +51,9 @@
               "NetworkStack",
               "Outputs.PrivateSubnet2ID"
             ]
-          }
+          },
+          "DBUsername" : {"!Ref" : "DBUsername"  },
+          "DBPassword" : {"!Ref" : "DBPassword"  }
         }
       }
     },
@@ -55,7 +71,7 @@
           "ProdAppSecurityGroupID": {
             "Fn::GetAtt": [
               "NetworkStack",
-              "Outputs.ProdAppSecurityGroup"
+              "Outputs.ProdAppSecurityGroupID"
             ]
           },
           "PublicSubnet1ID": {
@@ -80,18 +96,6 @@
             "Fn::GetAtt": [
               "NetworkStack",
               "Outputs.PrivateSubnet2ID"
-            ]
-          },
-          "ApplicationRoleARN": {
-            "Fn::GetAtt": [
-              "IAMStack",
-              "Outputs.ApplicationRoleARN"
-            ]
-          },
-          "ApplicationInstanceProfileARN": {
-            "Fn::GetAtt": [
-              "IAMStack",
-              "Outputs.ApplicationInstanceProfileARN"
             ]
           },
           "VPCID": {

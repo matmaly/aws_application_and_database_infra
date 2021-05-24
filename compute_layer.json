@@ -27,14 +27,6 @@
             "Type" : "String",
             "Description": "Private Subnet 2 ID"
         },
-        "ApplicationRoleARN" : {
-            "Type" : "String",
-            "Description": "ARN of the Application Role"
-        },
-        "ApplicationInstanceProfileARN" : {
-            "Type" : "String",
-            "Description": "ARN of the Application Instance Profile"
-        },
         "VPCID" : {
             "Type" : "String",
             "Description": "ID of the VPC"
@@ -46,7 +38,7 @@
             "Properties" : {
                 "LaunchTemplateName" : "ProdApplicationServersLaunchTemplate",
                 "LaunchTemplateData" : {
-                    "IamInstanceProfile" : { "!Ref" : "ApplicationInstanceProfileARN" },
+                    "IamInstanceProfile" : "Inventory-App-Role",
                     "BlockDeviceMapping" : {
                         "Ebs" : {
                           "VolumeType" : "gp2",
@@ -95,30 +87,6 @@
                 "MaxSize" : "4",
                 "MinSize" : "2",
                 "VPCZoneIdentifier" : [{ "!Ref" : "PrivateSubnet1ID" }, { "!Ref" : "PrivateSubnet2ID" }]
-            }
-        },
-        "ProdApplicationInstance" : {
-            "Type" : "AWS::EC2::Instance",
-            "Properties" : {
-                "ImageId" : "ami-0d5eff06f840b45e9",
-                "KeyName" : "vockey",
-                "InstanceType" : "t2.small",
-                
-                "BlockDeviceMappings" : [
-                    {
-                        "DeviceName" : "/dev/sdm",
-                        "Ebs" : {
-                        "VolumeType" : "io1",
-                        "Iops" : "200",
-                        "DeleteOnTermination" : "false",
-                        "VolumeSize" : "20"
-                        }
-                    }, 
-                    {
-                        "DeviceName" : "/dev/sdk",
-                        "NoDevice" : {}
-                    }
-                ]
             }
         },
         "ProdApplicationLB" : {
