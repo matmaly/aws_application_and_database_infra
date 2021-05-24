@@ -6,19 +6,19 @@
     "NetworkStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "network_layer.json"
+        "TemplateURL": "s3://buckettoholdstacks-1646734/network_layer.json"
       }
     },
     "IAMStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "iam_layer.json"
+        "TemplateURL": "s3://buckettoholdstacks-1646734/iam_layer.json"
       }
     },
     "DBStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "database_layer.json",
+        "TemplateURL": "s3://buckettoholdstacks-1646734/database_layer.json",
         "Parameters": {
           "DBSGID": {
             "Fn::GetAtt": [
@@ -44,7 +44,7 @@
     "ComputeStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "compute_layer.json",
+        "TemplateURL": "s3://buckettoholdstacks-1646734/compute_layer.json",
         "Parameters": {
           "ALBSecurityGroupID": {
             "Fn::GetAtt": [
