@@ -318,6 +318,10 @@
     "PublicSubnet2ID": {
         "Value": { "!Ref" : "PublicSubnet2" },
         "Description": "ID of the Public Subnet2"
+    },
+    "VPCID": {
+        "Value": { "!Ref" : "prodVPC" },
+        "Description": "ID of the VPC"
     }
   }
 }

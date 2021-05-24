@@ -53,5 +53,13 @@
                 ]
             }
         }
+    },
+    "Outputs" : {
+        "ApplicationRoleARN": {
+            "Fn::GetAtt" : ["ApplicationRole", "Arn"] 
+        },
+        "ApplicationInstanceProfileARN": {
+            "Fn::GetAtt" : ["ApplicationInstanceProfile", "Arn"] 
+        }
     }
 }

@@ -81,6 +81,24 @@
               "NetworkStack",
               "Outputs.PrivateSubnet2ID"
             ]
+          },
+          "ApplicationRoleARN": {
+            "Fn::GetAtt": [
+              "IAMStack",
+              "Outputs.ApplicationRoleARN"
+            ]
+          },
+          "ApplicationInstanceProfileARN": {
+            "Fn::GetAtt": [
+              "IAMStack",
+              "Outputs.ApplicationInstanceProfileARN"
+            ]
+          },
+          "VPCID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.VPCID"
+            ]
           }
         }
       }
