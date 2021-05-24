@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "AWS CloudFormation RDS multi AZ instance",
+    "Description": "AWS CloudFormation Compute Layer",
 
     "Parameters": {
         "ALBSecurityGroupID" : {
@@ -39,8 +39,6 @@
             "Type" : "String",
             "Description": "ID of the VPC"
         }
-    }
-       
     },
     "Resources": {
         "ProdApplicationServersLaunchTemplate": {
@@ -48,7 +46,7 @@
             "Properties" : {
                 "LaunchTemplateName" : "ProdApplicationServersLaunchTemplate",
                 "LaunchTemplateData" : {
-                    "IamInstanceProfile" : { "!Ref" : "ApplicationInstanceProfileARN" }
+                    "IamInstanceProfile" : { "!Ref" : "ApplicationInstanceProfileARN" },
                     "BlockDeviceMapping" : {
                         "Ebs" : {
                           "VolumeType" : "gp2",
@@ -63,18 +61,18 @@
                     "SecurityGroupIds" : [{ "!Ref" : "AppSecurityGroupID" }],
                     "UserData" : {
                         "Fn::Base64" : { "Fn::Join" : ["",[
-        			        "#!/bin/bash -ex","\n",
-        			        "yum -y update","\n",
-                            "amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2","\n",
-                            "yum install -y httpd mariadb-server","\n",
-                            "chkconfig httpd on","\n",
-                            "service httpd start","\n",
-                            "cd /home/ec2-user","\n",
-                            "wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-200-ACACAD-20-EN/capstone-project/Countrydatadump.sql","\n",
-                            "chown ec2-user:ec2-user Countrydatadump.sql","\n",
-                            "cd /var/www/html","\n",
-                            "wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-200-ACACAD-20-EN/capstone-project/Example.zip","\n",
-                            "unzip Example.zip -d /var/www/html/","\n",]]}
+        			        "#!/bin/bash -ex\n",
+        			        "yum -y update\n",
+                            "amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2\n",
+                            "yum install -y httpd mariadb-server\n",
+                            "chkconfig httpd on\n",
+                            "service httpd start\n",
+                            "cd /home/ec2-user\n",
+                            "wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-200-ACACAD-20-EN/capstone-project/Countrydatadump.sql\n",
+                            "chown ec2-user:ec2-user Countrydatadump.sql\n",
+                            "cd /var/www/html\n",
+                            "wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-200-ACACAD-20-EN/capstone-project/Example.zip\n",
+                            "unzip Example.zip -d /var/www/html/"]]}
                     }
                 }
             }
@@ -87,7 +85,7 @@
                 "DesiredCapacity" : "2",
                 "HealthCheckGracePeriod" : 300,
                 "HealthCheckType" : "ELB",
-                "TargetGroupARNs" : [{ "!Ref" : "ProdApplicationTargetGroup" }]
+                "TargetGroupARNs" : [{ "!Ref" : "ProdApplicationTargetGroup" }],
                 "LaunchTemplate" : {
                     "LaunchTemplateId" : { "!Ref" : "ProdApplicationServersLaunchTemplate" },
                     "Version" : {
@@ -122,7 +120,7 @@
                     }
                 ]
             }
-        }
+        },
         "ProdApplicationLB" : {
             "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
             "Properties" : {
@@ -145,18 +143,18 @@
                 "HealthyThresholdCount" : 3,
                 "Matcher" : {
                     "HttpCode" : "200"
-                }
+                },
                 "Name" : "ProdApplicationTargetGroup",
                 "Port" : 8080,
                 "Protocol" : "HTTP",
-                "Tags" : [ { "Key" : "Name", "Value" : "Application Target Group" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "compute" } ]
+                "Tags" : [ { "Key" : "Name", "Value" : "Application Target Group" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "compute" } ],
                 "UnhealthyThresholdCount" : 3,
                 "VpcId" : { "!Ref" : "VPCID" }
             }
         },
         "ProdLBListener" : {
             "Type" : "AWS::ElasticLoadBalancingV2::Listener",
-            "DependsOn" : ["ProdApplicationLB", "ProdApplicationTargetGroup"]
+            "DependsOn" : ["ProdApplicationLB", "ProdApplicationTargetGroup"],
             "Properties" : {
                 "DefaultActions" : [{ "Type": "forward" }, { "TargetGroupArn": "ProdApplicationTargetGroup" }],
                   "LoadBalancerArn" : { "!Ref" : "ProdApplicationLB" },

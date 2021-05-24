@@ -14,7 +14,7 @@
         "PrivateSubnet2ID" : {
             "Type" : "String",
             "Description": "ID of the private subnet 2"
-        }
+        },
         "DBInstanceID": {
             "Default": "prodDbInstance",
             "Description": "My database instance",
@@ -91,7 +91,7 @@
                 "MasterUsername": { "!Ref": "DBUsername" },
                 "MasterUserPassword": { "!Ref": "DBPassword" },
                 "MultiAZ" : "True",
-                "DBSubnetGroupName": { "!Ref": "DBSubnetGroup" }
+                "DBSubnetGroupName": { "!Ref": "DBSubnetGroup" },
                 "VPCSecurityGroups": [{ "!Ref!" : "DBSGID" }]
             }
         },
