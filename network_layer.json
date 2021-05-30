@@ -173,6 +173,24 @@
         "InternetGatewayId" : { "Ref" : "ProdInternetGateway" }
       }
     },
+    "IGWRoute1" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : ["ProdInternetGateway","PublicSubnet1"],
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable1" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "ProdInternetGateway" }
+      }
+    },
+    "IGWRoute2" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : ["ProdInternetGateway","PublicSubnet2"],
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable2" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "ProdInternetGateway" }
+      }
+    },
     "ProdBastionSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
@@ -259,6 +277,26 @@
          }
       }
     },
+    "ProdAppSecurityGroupInboundRule3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties":{
+         "IpProtocol": "tcp",
+         "FromPort": 22,
+         "ToPort": 22,
+         "SourceSecurityGroupId": {
+           "Fn::GetAtt": [
+             "ProdBastionSecurityGroup",
+             "GroupId"
+            ]
+         },
+         "GroupId": {
+            "Fn::GetAtt": [
+              "ProdAppSecurityGroup",
+              "GroupId"
+            ]
+         }
+      }
+    },
     "ProdDBSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "DependsOn" : "ProdAppSecurityGroup",
@@ -269,7 +307,7 @@
         "Tags" : [ { "Key" : "Name", "Value" : "Prod DB SG" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "network" } ]
       }
     },
-    "ProdDBSecurityGroupInboundRule": {
+    "ProdDBSecurityGroupInboundRule1": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties":{
          "IpProtocol": "tcp",
@@ -288,9 +326,38 @@
             ]
          }
       }
-    }
+    },
+    "ProdDBSecurityGroupInboundRule2": {
+        "Type": "AWS::EC2::SecurityGroupIngress",
+        "Properties":{
+           "IpProtocol": "tcp",
+           "FromPort": 3306,
+           "ToPort": 3306,
+           "SourceSecurityGroupId": {
+             "Fn::GetAtt": [
+               "ProdBastionSecurityGroup",
+               "GroupId"
+              ]
+           },
+           "GroupId": {
+              "Fn::GetAtt": [
+                "ProdDBSecurityGroup",
+                "GroupId"
+              ]
+           }
+        }
+      }
   },
   "Outputs" : {
+    "ProdBastionSecurityGroupID" : {
+      "Description" : "ID of the Bastion SG",
+      "Value" : {
+        "Fn::GetAtt": [
+          "ProdBastionSecurityGroup",
+          "GroupId"
+        ]
+      }
+    },
     "ProdAppSecurityGroupID" : {
       "Description" : "ID of the App SG",
       "Value" : {

@@ -3,6 +3,10 @@
     "Description": "AWS CloudFormation Compute Layer",
 
     "Parameters": {
+        "ProdBastionSecurityGroup" : {
+            "Type" : "String",
+            "Description": "Bastion SG group ID from the Network layer"
+        },
         "ALBSecurityGroupID" : {
             "Type" : "String",
             "Description": "ALB SG group ID from the Network layer"
@@ -33,24 +37,79 @@
         }
     },
     "Resources": {
+        "BastionHost1" : {
+           "Type" : "AWS::EC2::Instance",
+           "Properties" : {
+              "ImageId" : "ami-0d5eff06f840b45e9",
+              "KeyName" : "BastionKey",
+              "BlockDeviceMappings" : [
+                 {
+                    "DeviceName" : "/dev/sdm",
+                    "Ebs" : {
+                      "VolumeType" : "gp2",
+                      "VolumeSize" : "20"
+                    }
+                 } 
+              ],
+              "NetworkInterfaces" : [
+                  {
+                    "AssociatePublicIpAddress": true,
+                    "DeviceIndex": 0,
+                    "SubnetId": {"Ref": "PublicSubnet1ID"},
+                    "GroupSet": [ {"Ref": "ProdBastionSecurityGroup"} ]
+                  }
+                ],
+              "AvailabilityZone" : "us-east-1a",
+              "InstanceType" : "t2.small"
+           }
+        },
+        "BastionHost2" : {
+           "Type" : "AWS::EC2::Instance",
+           "Properties" : {
+              "ImageId" : "ami-0d5eff06f840b45e9",
+              "KeyName" : "BastionKey",
+              "BlockDeviceMappings" : [
+                 {
+                    "DeviceName" : "/dev/sdm",
+                    "Ebs" : {
+                      "VolumeType" : "gp2",
+                      "VolumeSize" : "20"
+                    }
+                 } 
+              ],
+              "NetworkInterfaces" : [
+                  {
+                    "AssociatePublicIpAddress": true,
+                    "DeviceIndex": 0,
+                    "SubnetId": {"Ref": "PublicSubnet2ID"},
+                    "GroupSet": [ {"Ref": "ProdBastionSecurityGroup"} ]
+                  }
+              ],
+              "AvailabilityZone" : "us-east-1b",
+              "InstanceType" : "t2.small"
+           }
+        },
         "ProdApplicationServersLaunchTemplate": {
             "Type" : "AWS::EC2::LaunchTemplate",
             "Properties" : {
                 "LaunchTemplateName" : "ProdApplicationServersLaunchTemplate",
                 "LaunchTemplateData" : {
-                    "IamInstanceProfile" : "Inventory-App-Role",
-                    "BlockDeviceMapping" : {
+                    "IamInstanceProfile" : {
+                        "Name" : "Inventory-App-Role"
+                    },
+                    "BlockDeviceMappings" : [
+                    {
                         "Ebs" : {
                           "VolumeType" : "gp2",
                           "DeleteOnTermination" : "true",
                           "VolumeSize" : "20",
                           "Encrypted" : "true"
                         }
-                    },
+                    }],
                     "ImageId" : "ami-0d5eff06f840b45e9",
                     "InstanceType" : "t2.small",
                     "KeyName" : "vockey",
-                    "SecurityGroupIds" : [{ "Ref" : "AppSecurityGroupID" }],
+                    "SecurityGroupIds" : [{ "Ref" : "ProdAppSecurityGroupID" }],
                     "UserData" : {
                         "Fn::Base64" : { "Fn::Join" : ["",[
         			        "#!/bin/bash -ex\n",
@@ -88,6 +147,21 @@
                 "MinSize" : "2",
                 "VPCZoneIdentifier" : [{ "Ref" : "PrivateSubnet1ID" }, { "Ref" : "PrivateSubnet2ID" }]
             }
+        },
+        "CPUScalingPolicy":{
+            "Type":"AWS::AutoScaling::ScalingPolicy",
+            "Properties":{
+                "AutoScalingGroupName" : { "Ref" : "ProdAppASG" },
+                "PolicyType":"TargetTrackingScaling",
+                "TargetTrackingConfiguration":{
+                  "PredefinedMetricSpecification":{
+                    "PredefinedMetricType":"ASGAverageCPUUtilization"
+                  },
+                  "TargetValue": 70,
+                  "ScaleInCooldown" : 600,
+                  "ScaleOutCooldown" : 600
+                }
+              }
         },
         "ProdApplicationLB" : {
             "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
