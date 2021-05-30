@@ -31,6 +31,7 @@
     },
     "DBStack": {
       "Type": "AWS::CloudFormation::Stack",
+      "DependsOn" : "NetworkStack",
       "Properties": {
         "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/database_layer.json",
         "Parameters": {
@@ -51,14 +52,13 @@
               "NetworkStack",
               "Outputs.PrivateSubnet2ID"
             ]
-          },
-          "DBUsername" : {"!Ref" : "DBUsername"  },
-          "DBPassword" : {"!Ref" : "DBPassword"  }
+          }
         }
       }
     },
     "ComputeStack": {
       "Type": "AWS::CloudFormation::Stack",
+      "DependsOn" : "NetworkStack",
       "Properties": {
         "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/compute_layer.json",
         "Parameters": {

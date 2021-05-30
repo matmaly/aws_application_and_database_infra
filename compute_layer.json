@@ -50,7 +50,7 @@
                     "ImageId" : "ami-0d5eff06f840b45e9",
                     "InstanceType" : "t2.small",
                     "KeyName" : "vockey",
-                    "SecurityGroupIds" : [{ "!Ref" : "AppSecurityGroupID" }],
+                    "SecurityGroupIds" : [{ "Ref" : "AppSecurityGroupID" }],
                     "UserData" : {
                         "Fn::Base64" : { "Fn::Join" : ["",[
         			        "#!/bin/bash -ex\n",
@@ -77,16 +77,16 @@
                 "DesiredCapacity" : "2",
                 "HealthCheckGracePeriod" : 300,
                 "HealthCheckType" : "ELB",
-                "TargetGroupARNs" : [{ "!Ref" : "ProdApplicationTargetGroup" }],
+                "TargetGroupARNs" : [{ "Ref" : "ProdApplicationTargetGroup" }],
                 "LaunchTemplate" : {
-                    "LaunchTemplateId" : { "!Ref" : "ProdApplicationServersLaunchTemplate" },
+                    "LaunchTemplateId" : { "Ref" : "ProdApplicationServersLaunchTemplate" },
                     "Version" : {
                         "Fn::GetAtt" : ["ProdApplicationServersLaunchTemplate", "LatestVersionNumber"]
                     }
                 },
                 "MaxSize" : "4",
                 "MinSize" : "2",
-                "VPCZoneIdentifier" : [{ "!Ref" : "PrivateSubnet1ID" }, { "!Ref" : "PrivateSubnet2ID" }]
+                "VPCZoneIdentifier" : [{ "Ref" : "PrivateSubnet1ID" }, { "Ref" : "PrivateSubnet2ID" }]
             }
         },
         "ProdApplicationLB" : {
@@ -95,8 +95,8 @@
                 "IpAddressType" : "ipv4",
                 "Name" : "ProdApplicationLoadBalancer",
                 "Scheme" : "internet-facing",
-                "SecurityGroups" : [{ "!Ref" : "ALBSecurityGroupID" }],
-                "Subnets" : [{ "!Ref" : "PublicSubnet1ID" }, { "!Ref" : "PublicSubnet2ID" }],
+                "SecurityGroups" : [{ "Ref" : "ALBSecurityGroupID" }],
+                "Subnets" : [{ "Ref" : "PublicSubnet1ID" }, { "Ref" : "PublicSubnet2ID" }],
                 "Tags" : [ { "Key" : "Name", "Value" : "Application Load Balancer" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "compute" } ],
                 "Type" : "application"
             }
@@ -117,7 +117,7 @@
                 "Protocol" : "HTTP",
                 "Tags" : [ { "Key" : "Name", "Value" : "Application Target Group" }, { "Key" : "stack", "Value" : "production" }, { "Key" : "stackType", "Value" : "compute" } ],
                 "UnhealthyThresholdCount" : 3,
-                "VpcId" : { "!Ref" : "VPCID" }
+                "VpcId" : { "Ref" : "VPCID" }
             }
         },
         "ProdLBListener" : {
@@ -125,7 +125,7 @@
             "DependsOn" : ["ProdApplicationLB", "ProdApplicationTargetGroup"],
             "Properties" : {
                 "DefaultActions" : [{ "Type": "forward" }, { "TargetGroupArn": "ProdApplicationTargetGroup" }],
-                  "LoadBalancerArn" : { "!Ref" : "ProdApplicationLB" },
+                  "LoadBalancerArn" : { "Ref" : "ProdApplicationLB" },
                   "Port" : 80,
                   "Protocol" : "HTTP"
                 }
@@ -135,7 +135,7 @@
             "Properties" : {
                 "Actions" : [{ "Type" : "forward" }, { "TargetGroupArn" : "ProdApplicationTargetGroup" }],
                 "Conditions" : [{ "Field" : "path-pattern" }, { "Values" : ["/*"] }],
-                "ListenerArn" : { "!Ref" : "ProdLBListener" },
+                "ListenerArn" : { "Ref" : "ProdLBListener" },
                 "Priority" : 1
             }
         }

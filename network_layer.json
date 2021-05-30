@@ -293,15 +293,30 @@
   "Outputs" : {
     "ProdAppSecurityGroupID" : {
       "Description" : "ID of the App SG",
-      "Value" : { "Ref" : "ProdAppSecurityGroup" }
+      "Value" : {
+        "Fn::GetAtt": [
+          "ProdAppSecurityGroup",
+          "GroupId"
+        ]
+      }
     },
     "ProdDBSecurityGroupID" : {
       "Description" : "ProdDBSecurityGroup",
-      "Value" : { "Ref" : "ProdDBSecurityGroup" }
+      "Value" : {
+        "Fn::GetAtt": [
+          "ProdDBSecurityGroup",
+          "GroupId"
+        ]
+      }
     },
     "ALBSecurityGroupID" : {
       "Description" : "ID of the ALB SG",
-      "Value" : { "Ref" : "ProdALBSecurityGroup" }
+      "Value" : {
+        "Fn::GetAtt": [
+          "ProdALBSecurityGroup",
+          "GroupId"
+        ]
+      }
     },
     "PrivateSubnet1ID" : {
       "Description" : "ID of the Private Subnet1",
