@@ -29,33 +29,6 @@
         "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/network_layer.json"
       }
     },
-    "DBStack": {
-      "Type": "AWS::CloudFormation::Stack",
-      "DependsOn" : "NetworkStack",
-      "Properties": {
-        "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/database_layer.json",
-        "Parameters": {
-          "DBSGID": {
-            "Fn::GetAtt": [
-              "NetworkStack",
-              "Outputs.ProdDBSecurityGroupID"
-            ]
-          },
-          "PrivateSubnet1ID": {
-            "Fn::GetAtt": [
-              "NetworkStack",
-              "Outputs.PrivateSubnet1ID"
-            ]
-          },
-          "PrivateSubnet2ID": {
-            "Fn::GetAtt": [
-              "NetworkStack",
-              "Outputs.PrivateSubnet2ID"
-            ]
-          }
-        }
-      }
-    },
     "ComputeStack": {
       "Type": "AWS::CloudFormation::Stack",
       "DependsOn" : "NetworkStack",
@@ -108,6 +81,33 @@
             "Fn::GetAtt": [
               "NetworkStack",
               "Outputs.VPCID"
+            ]
+          }
+        }
+      }
+    },
+    "DBStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "DependsOn" : ["NetworkStack","ComputeStack"],
+      "Properties": {
+        "TemplateURL": "https://buckettoholdstacks-1646734.s3.amazonaws.com/database_layer.json",
+        "Parameters": {
+          "DBSGID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.ProdDBSecurityGroupID"
+            ]
+          },
+          "PrivateSubnet1ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PrivateSubnet1ID"
+            ]
+          },
+          "PrivateSubnet2ID": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.PrivateSubnet2ID"
             ]
           }
         }

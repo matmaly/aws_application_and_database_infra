@@ -99,6 +99,7 @@
                     },
                     "BlockDeviceMappings" : [
                     {
+                        "DeviceName" : "/dev/sdm",
                         "Ebs" : {
                           "VolumeType" : "gp2",
                           "DeleteOnTermination" : "true",
